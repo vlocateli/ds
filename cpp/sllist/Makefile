@@ -16,7 +16,7 @@ CCFLAGS = -flto -Ofast
 endif
 
 ifeq ($(SAN),1)
-CCFLAGS += -fsanitize=address,undefined
+CCFLAGS += -fsanitize=address,undefined -ggdb
 endif
 
 ifeq ($(DBG),1)
@@ -39,7 +39,7 @@ $(EXE): $(SRC) $(INCLUDE)
 clean:
 	$(RM) $(EXE)
 
-run: $(EXE)
+run: 
 	./$(EXE)
 
 

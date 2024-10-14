@@ -15,6 +15,10 @@ namespace ds{
             {
                 return m_value;
             }
+            T& value_ref()
+            {
+                return m_value;
+            }
             void value(const T& value)
             {
                 m_value = value;

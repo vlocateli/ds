@@ -6,6 +6,20 @@ int main () {
         list_1.push_back(i);
     }
     std::cout << list_1 << '\n';
+    auto max = list_1.maximum();
+    std::cout << max << '\n';
+    auto min = list_1.minimum();
+    std::cout << min << '\n';
+    auto search_res = list_1.search(9);
+    std::cout << *search_res << '\n';
+    auto list_p = std::move(list_1);
+    auto list_q(list_p);
+    std::cout << "list_p (after move): " << list_p << '\n';
+    std::cout << "list_q (after copy): " << list_q << '\n';
+    list_q.push_back(100);
+    std::cout << "list_p : " << list_p << '\n';
+    std::cout << "list_q : " << list_q << '\n';
+    std::cout << list_q.pop_back() << '\n';
     return 0;
 }
 
