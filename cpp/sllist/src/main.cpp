@@ -20,6 +20,18 @@ int main () {
     std::cout << "list_p : " << list_p << '\n';
     std::cout << "list_q : " << list_q << '\n';
     std::cout << list_q.pop_back() << '\n';
+    DEBUG_PRINT(list_q.minimum());
+    DEBUG_PRINT(list_q.maximum());
+    auto it_begin = list_q.begin();
+    list_q.insert_after(it_begin, 10);
+    ds::LinkedList<size_t> list_v;
+    DEBUG_PRINT(list_q);
+    list_q.push_front(0);
+    DEBUG_PRINT(list_q);
+    list_v.push_front(0);
+    DEBUG_PRINT(list_v);
+    list_q.reverse();
+    DEBUG_PRINT(list_q);
     return 0;
 }
 
