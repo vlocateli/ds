@@ -1,12 +1,12 @@
 #pragma once
 namespace ds{
     template<typename T>
-    class SLLNode{
+    class Node{
         public:
-            SLLNode()
+            Node()
             {
             }
-            SLLNode(const T& value):
+            Node(const T& value):
                 m_value{value},
                 m_next{nullptr}
             {
@@ -23,16 +23,16 @@ namespace ds{
             {
                 m_value = value;
             }
-            SLLNode* next() const
+            Node* next() const
             {
                 return m_next;
             }
-            void set_next(SLLNode* next)
+            void set_next(Node* next)
             {
                 m_next = next;
             }
         private:
             T m_value;
-            SLLNode* m_next;
+            Node* m_next;
     };
 }
