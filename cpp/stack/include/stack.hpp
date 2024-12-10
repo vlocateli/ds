@@ -6,11 +6,11 @@
 #define DEBUG 1
 #ifdef DEBUG
 #include <assert.h>
-#include <iostream>
 #define DEBUG_PRINT(x)\
     std::cerr << #x << ": " << '\n';
 #endif // DEBUG
 namespace ds{
+#ifdef STACK_SLL_IMPLEMENTATION
 template<typename T>
 class Stack : public ds::Node<T>{
     public:
@@ -21,33 +21,36 @@ class Stack : public ds::Node<T>{
         T& pop_ref();
         size_t size() const;
         ds::Node<T>* top() const;
-        bool is_empty() const;
+        bool empty() const;
         Stack operator=(const Stack& other)
         {
             if (this == other) {
-                return this;
+                return *this;
             }
             deallocate_stack();
-            while (not is_empty()) {
+            while (not empty()) {
                T pop_val = other.pop;
                push(pop_val);
             }
         }
         Stack (const Stack<T>& other)
-            : m_size{other.m_size},
-              m_top{nullptr}
+            :  ds::Node<T>(),
+               m_top{nullptr},
+               m_size{other.m_size}
         {
-            auto tmp = other;
-            while (not is_empty(tmp)) {
-                auto pop_value = tmp.pop();
-                push(pop_value);
+            auto current = other.top();
+            while (current != nullptr) {
+                T current_value = current->value();
+                push(current_value);
+                current = current->next();
             }
         }
         friend std::ostream& operator<< (std::ostream& stream, const ds::Stack<T> &s)
         {
-            Stack<T> tmp = s;
-            while (! tmp.is_empty()) {
-                stream << tmp.pop() << ' ';
+            ds::Node<T>*current = s.top();
+            while (current != nullptr) {
+                stream << current->value() << ' ';
+                current = current->next();
             }
 
             return stream;
@@ -69,7 +72,7 @@ Stack<T>::Stack()
 template<typename T>
 Stack<T>::~Stack()
 {
-   while (not is_empty()) {
+   while (not empty()) {
         pop();
    }
 }
@@ -86,21 +89,21 @@ void Stack<T>::push (const T& val)
 template<typename T>
 void Stack<T>::deallocate_stack()
 {
-    while (not is_empty()) {
+    while (not empty()) {
         pop();
     }
     m_top  = nullptr;
     m_size = 0;
 }
 template<typename T>
-bool Stack<T>::is_empty () const
+bool Stack<T>::empty () const
 {
-    return m_size == 0;
+    return m_top == nullptr;
 }
 template<typename T>
 T Stack<T>::pop ()
 {
-   if (is_empty()) {
+   if (empty()) {
     throw std::underflow_error("Stack underflow occured. \
             Tried to pop on a empty stack.");
    }
@@ -122,6 +125,7 @@ ds::Node<T>* Stack<T>::top() const
 {
     return m_top;
 }
+#endif
 } // ds
 
 #endif // STACK_HPP

@@ -1,12 +1,11 @@
-#include <iostream>
 #include "../include/stack.hpp"
 
 int main()
 {
-    ds::Stack<size_t> s;
-    s.push(2);
-    s.push(3);
-    std::cout << s << '\n';
-    //s.pop();
-    //std::cout << s << '\n';
+    ds::Stack<int32_t> p;
+
+    for (auto i = 0; i < 10; i++) {
+        p.push(i);
+    }
+    DEBUG_PRINT(p);
 }
