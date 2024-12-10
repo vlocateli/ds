@@ -5,7 +5,7 @@ CCFLAGS = -pedantic -Wall -Wextra -Wcast-align -Wcast-qual \
 			-Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion \
 			-Wsign-promo -Wstrict-null-sentinel -Wstrict-overflow=5 \
 			-Wswitch-default -Wundef -Werror -std=c++17
-EXE  = stack
+EXE  = stack.bin
 .PHONY: all clean run $(EXE)
 ?SAN = 1
 ?DBG = 1

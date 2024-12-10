@@ -1,8 +1,8 @@
 #ifndef STACK_HPP
 #define STACK_HPP 1
 #pragma once
-#include <iostream>
 #include "node.hpp"
+#include <iostream>
 #define DEBUG 1
 #ifdef DEBUG
 #include <assert.h>
@@ -20,7 +20,7 @@ class Stack : public ds::Node<T>{
         T pop();
         T& pop_ref();
         size_t size() const;
-        ds::Node<T>* top() const;
+        T top() const;
         bool empty() const;
         Stack operator=(const Stack& other)
         {
@@ -44,16 +44,6 @@ class Stack : public ds::Node<T>{
                 push(current_value);
                 current = current->next();
             }
-        }
-        friend std::ostream& operator<< (std::ostream& stream, const ds::Stack<T> &s)
-        {
-            ds::Node<T>*current = s.top();
-            while (current != nullptr) {
-                stream << current->value() << ' ';
-                current = current->next();
-            }
-
-            return stream;
         }
 
     private:
@@ -104,8 +94,8 @@ template<typename T>
 T Stack<T>::pop ()
 {
    if (empty()) {
-    throw std::underflow_error("Stack underflow occured. \
-            Tried to pop on a empty stack.");
+    throw std::underflow_error("ERROR:Stack underflow");
+    throw;
    }
    T pop_value = m_top->value();
    auto next_node = m_top->next();
@@ -121,11 +111,11 @@ size_t Stack<T>::size() const
     return m_size;
 }
 template<typename T>
-ds::Node<T>* Stack<T>::top() const
+T Stack<T>::top() const
 {
-    return m_top;
+    return m_top->value();
 }
-#endif
+#endif // STACK_SLL_IMPLEMENTATION
 } // ds
 
 #endif // STACK_HPP
