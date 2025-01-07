@@ -17,8 +17,8 @@
 #include <limits>
 #include <stdexcept>
 #include <string.h>
-#include <type_traits>
 #include <utility>
+#include <new>
 namespace ds {
 template <typename T> class Vector {
 public:
@@ -44,6 +44,9 @@ public:
   void emplace_back(Args&&... args);
   typename Vector<T>::iterator erase(const_iterator pos);
   iterator erase(const_iterator first, const_iterator last);
+  void emplace_back(const T &);
+  size_type erase(const T &);
+  void erase_if(const size_type &);
   size_type capacity() const;
   size_type actual_size() const;
   size_type max_capacity();
@@ -111,11 +114,14 @@ Vector<T>::Vector(const size_t &size)
 
 template <typename T> void Vector<T>::push_back(const T &value) {
   try {
+    const auto cache_line_size = std::hardware_destructive_interference_size; 
+    const auto type_size = sizeof(T);
+    std::size_t elements_per_cache_line = cache_line_size / type_size;
     if (m_actual_size == m_capacity) {
       if (m_capacity == 0) {
-        m_capacity = 1;
+        m_capacity = elements_per_cache_line;
       } else {
-        m_capacity *= 2;
+        m_capacity *= elements_per_cache_line;
       }
       auto new_data = new T[m_capacity];
       if (new_data != nullptr) {

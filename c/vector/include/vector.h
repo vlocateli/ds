@@ -8,8 +8,6 @@ typedef struct vector{
     size_t m_size;
     size_t m_capacity;
 }Vector;
-typedef struct vector_it{
-}VectorIterator;
 void vector_create(Vector* v, const size_t size)
 {
     v->m_data = malloc(sizeof(void *) * size);
