@@ -116,6 +116,27 @@ T Stack<T>::top() const
     return m_top->value();
 }
 #endif // STACK_SLL_IMPLEMENTATION
+#ifdef STACK_VECTOR_IMPLEMENTATION
+#include "vector.hpp"
+#include "vectoriterator.hpp"
+class Stack{
+public:
+    Stack() = default;
+    ~Stack() = default;
+    void push(const T&);
+    T& pop();
+    size_t size();
+    T top(); 
+private:
+    Vector<T> m_data;
+};
+void Stack<T>::push(const T& value)
+{
+}
+T& Stack<T>::pop()
+{
+}
+#endif // STACK_VECTOR_IMPLEMENTATION
 } // ds
 
 #endif // STACK_HPP

@@ -42,12 +42,16 @@ public:
     m_data += n;
     return *this;
   }
-  VectorIterator &operator-(difference_type n) {
+
+  VectorIterator operator-(difference_type n) const {
     return VectorIterator(m_data - n);
   }
   VectorIterator &operator-=(difference_type n) {
     m_data -= n;
     return *this;
+  }
+  operator VectorIterator<const T>() const {
+    return VectorIterator<const T>(m_data);
   }
   difference_type operator-(const VectorIterator &other) const {
     return m_data - other.m_data;
