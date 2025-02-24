@@ -17,23 +17,23 @@ public:
     using iterator_category = std::forward_iterator_tag;
 
     explicit Iterator(SLLNode<T>* ptr = nullptr)
-    : m_ptr{ptr}
+    : ptr_{ptr}
     {
     }
 
     reference operator*() const
     {
-        return m_ptr->value_ref();
+        return ptr_->value_ref();
     }
 
     pointer operator->() const
     {
-        return &(m_ptr->value());
+        return &(ptr_->value());
     }
 
     Iterator& operator++()
     {
-        m_ptr = m_ptr->next();
+        ptr_ = ptr_->next();
         return *this;
     }
 
@@ -46,19 +46,19 @@ public:
 
     bool operator== (const Iterator& other) const
     {
-        return m_ptr == other.m_ptr;
+        return ptr_ == other.ptr_;
     }
 
     bool operator!= (const Iterator& other) const
     {
-        return m_ptr != other.m_ptr;
+        return ptr_ != other.ptr_;
     }
     SLLNode<T>* ptr() const
     {
-        return m_ptr;
+        return ptr_;
     }
 private:
-    SLLNode<T>* m_ptr;
+    SLLNode<T>* ptr_;
 };
 } // detail
 } // ds

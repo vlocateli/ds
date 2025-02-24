@@ -1,3 +1,5 @@
+#ifndef NODE_HPP
+#define NODE_HPP 1
 #pragma once
 namespace ds{
     template<typename T>
@@ -7,32 +9,33 @@ namespace ds{
             {
             }
             SLLNode(const T& value):
-                m_value{value},
-                m_next{nullptr}
+                value_{value},
+                next_{nullptr}
             {
             }
             T value() const
             {
-                return m_value;
+                return value_;
             }
             T& value_ref()
             {
-                return m_value;
+                return value_;
             }
             void value(const T& value)
             {
-                m_value = value;
+                value_ = value;
             }
             SLLNode* next() const
             {
-                return m_next;
+                return next_;
             }
             void set_next(SLLNode* next)
             {
-                m_next = next;
+                next_ = next;
             }
         private:
-            T m_value;
-            SLLNode* m_next;
+            T value_;
+            SLLNode* next_;
     };
 }
+#endif // NODE_HPP

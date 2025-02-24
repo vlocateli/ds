@@ -26,9 +26,16 @@ namespace test{
         Vector<int> v; 
         Vector<int> p(1024);
         Vector<int> q{1,2,3,4};
-        assert(v.actual_size() == 0);
-        assert(p.actual_size() == 0);
-        assert(q.actual_size() == 4);
+        Vector<int> s(q);
+        Vector<int> tmp{1,2,3,4};
+        Vector<int> f(std::move(tmp));
+        Vector<int> g(f);
+        assert(v.size() == 0);
+        assert(p.size() == 0);
+        assert(q.size() == 4);
+        assert(s.size() == 4);
+        assert(f.size() == 4);
+        assert(g.size() == 4);
         return true;
     }
 
@@ -36,14 +43,14 @@ namespace test{
     {
         Vector<unsigned int> v;
         for (unsigned int i = 0; i < 1024; i++) {
-            v.push_back(i, 2);
+            v.push_back(i);
         }
-        assert(v.actual_size() == 1024);
+        assert(v.size() == 1024);
 
         Vector<Foo> p(10);
         Foo f(10, 5.5);
         p.push_back(f);
-        assert(p.actual_size() == 1);
+        assert(p.size() == 1);
         return true;
     }
     bool test_reserve()
@@ -61,7 +68,7 @@ namespace test{
         Vector<Foo> v;
         v.emplace_back(f);
         v.emplace_back(b);
-        assert(v.actual_size() == 2);
+        assert(v.size() == 2);
         return true;
     }
     bool test_insert()
@@ -97,11 +104,12 @@ namespace test{
     }
     bool test_erase()
     {
-        Vector<int> v{1,2,3,5,6,7,8};
+        Vector<int> v{1,2,3,4,5,6,7,8};
         v.erase(v.begin() + 1);
-        v.erase(v.begin() + 1, v.begin() + 4);
+        std::cout << v << '\n';
+        v.erase(v.begin() + 4);
+        std::cout << v << '\n';
         return true;
     }
 
 }
-

@@ -24,43 +24,43 @@ namespace ds{
         public:
             friend iterator<T>;
             LinkedList() noexcept:
-                m_list{nullptr},
-                m_tail{nullptr},
-                m_size{0}
+                list_{nullptr},
+                tail_{nullptr},
+                size_{0}
             {
             
             }
             LinkedList(const T& val) noexcept
             {
                 auto new_node = new SLLNode<T>(val);
-                m_tail = new_node;
-                m_list = new_node;
-                m_size = 1;
+                tail_ = new_node;
+                list_ = new_node;
+                size_ = 1;
             }
             LinkedList(const LinkedList& list)
                 :
-                    m_list{nullptr},
-                    m_tail{nullptr},
-                    m_size{0}
+                    list_{nullptr},
+                    tail_{nullptr},
+                    size_{0}
             {
-                if (list.m_list == nullptr) {
+                if (list.list_ == nullptr) {
                     return;
                 }
-                auto tmp = list.m_list;
+                auto tmp = list.list_;
                 while(tmp != nullptr) {
                     push_back(tmp->value_ref());
                     tmp = tmp->next();
                 }
             }
             LinkedList(LinkedList&& other) noexcept:
-                m_list{other.m_list},
-                m_tail{other.m_tail},
-                m_size{other.m_size}
+                list_{other.list_},
+                tail_{other.tail_},
+                size_{other.size_}
 
             {
-                other.m_list = nullptr;
-                other.m_tail = nullptr;
-                other.m_size = 0;
+                other.list_ = nullptr;
+                other.tail_ = nullptr;
+                other.size_ = 0;
                 
             }
             LinkedList& operator= (const LinkedList& list)
@@ -69,7 +69,7 @@ namespace ds{
                     return *this;
                 }
                 clear();
-                auto tmp = list.m_list;
+                auto tmp = list.list_;
                 while (tmp != nullptr) {
                     push_back(tmp->value_ref());
                     tmp = tmp->next();
@@ -83,20 +83,20 @@ namespace ds{
                     return *this;
                 }
                 deallocate_list();
-                m_list = other.list;
-                m_size = other.size;
-                m_tail = other.m_tail;
-                other.m_list = nullptr;
-                other.m_tail = nullptr;
-                other.m_size = 0;
+                list_ = other.list_;
+                size_ = other.size_;
+                tail_ = other.tail_;
+                other.list_ = nullptr;
+                other.tail_ = nullptr;
+                other.size_ = 0;
                 return *this;
             }
             bool operator== (const LinkedList& other)
             {
-                if (other.m_size != this->m_size) {
+                if (other.size_ != this->size_) {
                     return false;
                 }
-                auto tmp = this->m_list;
+                auto tmp = this->list_;
                 while (tmp != nullptr) {
                     if (tmp->value() != other->value()) {
                         return false;
@@ -107,27 +107,27 @@ namespace ds{
             }
             bool is_empty() const
             {
-                return m_size == 0;
+                return size_ == 0;
             }
             void clear()
             {
                 deallocate_list();
-                m_list = nullptr;
-                m_tail = nullptr;
-                m_size = 0;
+                list_ = nullptr;
+                tail_ = nullptr;
+                size_ = 0;
             }
             T& at(const size_t index) const
             {
-                auto tmp = m_list;
+                auto tmp = list_;
 #ifdef CHECK_BOUNDARIES
-                if (index >= m_size) {
+                if (index >= size_) {
                     DEBUG_PRINT(index);
                     throw std::out_of_range
                           ("ERROR: Index out of range in at()\n");
                 }
 #endif // CHECK_BOUNDARIES
-                if (index == m_size - 1) {
-                    return m_tail->value_ref();
+                if (index == size_ - 1) {
+                    return tail_->value_ref();
                 }
                 for (size_t i = 0; i < index; i++) {
                     tmp = tmp->next();
@@ -141,45 +141,45 @@ namespace ds{
             }
             size_t size() const
             {
-                return m_size;
+                return size_;
             }
             void push_back(const T& val)
             {
                 auto new_node = new SLLNode<T>(val);
-                if (m_size == 0) {
-                    m_list = new_node;
-                    m_tail = new_node;
+                if (size_ == 0) {
+                    list_ = new_node;
+                    tail_ = new_node;
                 } else{
-                    m_tail->set_next(new_node);
-                    m_tail = new_node;
+                    tail_->set_next(new_node);
+                    tail_ = new_node;
                 }
-                m_size++;
+                size_++;
                 return;
             }
             void push_back(const T&& val)
             {
                 auto new_node = new SLLNode<T>(std::move(val));
-                if (m_size == 0) {
-                    m_list = new_node;
-                    m_tail = new_node;
+                if (size_ == 0) {
+                    list_ = new_node;
+                    tail_ = new_node;
                 } else{
-                    m_tail->set_next(new_node);
-                    m_tail = new_node;
+                    tail_->set_next(new_node);
+                    tail_ = new_node;
                 }
-                m_size++;
+                size_++;
                 return;
             }
             T pop_back()
             {
-                auto head = m_list;
+                auto head = list_;
                 ds::SLLNode<T>* previous = nullptr;
                 T pop_value {};
-                if (m_size == 1) {
+                if (size_ == 1) {
                     pop_value = head->value();
                     deallocate_list();
                     return pop_value;
                 }
-                while (head != m_tail) {
+                while (head != tail_) {
                     previous = head;
                     head = head->next();
                 }
@@ -187,13 +187,13 @@ namespace ds{
                 auto tmp = head;
                 pop_value = head->value();
                 delete tmp;
-                m_tail = previous;
-                m_size--;
+                tail_ = previous;
+                size_--;
                 return pop_value;
             }
             const T* search(const T& val)
             {
-                auto tmp = m_list;
+                auto tmp = list_;
                 while (tmp != nullptr) {
                     if (tmp->value() == val) {
                         return &(tmp->value_ref());
@@ -204,7 +204,7 @@ namespace ds{
             }
             T maximum() const
             {
-                auto tmp = m_list;
+                auto tmp = list_;
                 T maximum = tmp->value(); 
                 while (tmp != nullptr) {
                    if (tmp->value() > maximum) {
@@ -216,7 +216,7 @@ namespace ds{
             }
             T minimum() const 
             {
-                auto tmp = m_list;
+                auto tmp = list_;
                 T minimum = tmp->value(); 
                 while (tmp != nullptr) {
                     if (tmp->value() < minimum) {
@@ -228,7 +228,7 @@ namespace ds{
             }
             T find_middle() const
             {
-                size_t mid_index = m_size;
+                size_t mid_index = size_;
                 mid_index  = mid_index % 2 == 0 ? mid_index/2:(mid_index/2) + 1; 
                 T middle_value = at(mid_index);
                 return middle_value; 
@@ -236,11 +236,11 @@ namespace ds{
             }
             size_t find(const T& value) const
             {
-                if (m_tail->value() == value) {
-                    return m_size - 1;
+                if (tail_->value() == value) {
+                    return size_ - 1;
                 }
                 size_t i;
-                for (i = 0; i < m_size - 1; i++) {
+                for (i = 0; i < size_ - 1; i++) {
                    if (this->at(i) == value) {
                        break;
                    }
@@ -249,20 +249,20 @@ namespace ds{
             }
             T pop_front()
             {
-                auto head = m_list;
+                auto head = list_;
                 ds::SLLNode<T>* previous = nullptr;
                 T pop_value {};
-                if (m_size == 1) {
-                    pop_value = m_list->value();
+                if (size_ == 1) {
+                    pop_value = list_->value();
                     deallocate_list();
                     return pop_value;
                 }
                 previous = head;
                 head = head->next();
-                m_list = head;
+                list_ = head;
                 pop_value = previous->value();
                 delete previous;
-                m_size--;
+                size_--;
                 return pop_value;
             }
             T push_front(const T& val)
@@ -270,15 +270,15 @@ namespace ds{
                 ds::SLLNode<T>* new_node{nullptr};
                 new_node = new ds::SLLNode<T>(val);
                 if (is_empty()) {
-                    m_list = new_node;
-                    m_tail = new_node;
-                    m_size++;
+                    list_ = new_node;
+                    tail_ = new_node;
+                    size_++;
                     return val;
                 }
-                auto head = m_list;
+                auto head = list_;
                 new_node->set_next(head);
-                m_list = new_node;
-                m_size++;
+                list_ = new_node;
+                size_++;
                 return val;
             }
             bool remove(const T& value)
@@ -286,16 +286,16 @@ namespace ds{
                 size_t index = this->find(value);
                 if (index == 0) {
                     pop_front();
-                    m_size--;
+                    size_--;
                     return true;
                 }
-                else if (index == m_size - 1) {
+                else if (index == size_ - 1) {
                     pop_back();
-                    m_size--;
+                    size_--;
                     return true;
                 }
                 ds::SLLNode<T> *previous = nullptr;
-                auto head = m_list->next();
+                auto head = list_->next();
                 for (size_t i = 1; i < index; i++) {
                     previous = head;
                     head = head->next();
@@ -303,7 +303,7 @@ namespace ds{
                 previous->set_next(head->next());
                 auto node_to_delete = head;
                 delete node_to_delete;
-                m_size--;
+                size_--;
                 return true;
             }
             void reverse()
@@ -319,7 +319,7 @@ namespace ds{
             friend std::ostream& operator<< (std::ostream& stream,
                                       const ds::LinkedList<T> &list)
             {
-                auto tmp = list.m_list;
+                auto tmp = list.list_;
 
                 while (tmp != nullptr) {
                     stream << tmp->value() << " ";
@@ -330,7 +330,7 @@ namespace ds{
             }
             ds::detail::Iterator<T> begin()
             {
-            return ds::detail::Iterator<T>(m_list);
+            return ds::detail::Iterator<T>(list_);
             }
             ds::detail::Iterator<T> end()
             {
@@ -349,21 +349,21 @@ namespace ds{
         private:
             void deallocate_list() noexcept
             {
-                auto head = m_list;
+                auto head = list_;
                 while (head != nullptr)
                 {
                     auto p = head;
                     head = head->next();
                     delete p;
                 }
-                m_list = nullptr;
-                m_tail = nullptr;
-                m_size = 0;
+                list_ = nullptr;
+                tail_ = nullptr;
+                size_ = 0;
                 
             }
-            SLLNode<T>* m_list;
-            SLLNode<T>* m_tail;
-            size_t   m_size;
+            SLLNode<T>* list_;
+            SLLNode<T>* tail_;
+            size_t   size_;
 
 };
 } // namespace ds
