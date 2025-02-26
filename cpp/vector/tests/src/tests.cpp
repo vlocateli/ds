@@ -31,11 +31,11 @@ namespace test{
         Vector<int> f(std::move(tmp));
         Vector<int> g(f);
         assert(v.size() == 0);
-        assert(p.size() == 0);
-        assert(q.size() == 4);
-        assert(s.size() == 4);
-        assert(f.size() == 4);
-        assert(g.size() == 4);
+        assert(p.size() == 1024);
+        assert(q.size() == 8);
+        assert(s.size() == 8);
+        assert(f.size() == 8);
+        assert(g.size() == 8);
         return true;
     }
 

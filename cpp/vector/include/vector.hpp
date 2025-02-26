@@ -43,12 +43,15 @@ public:
   explicit Vector(const Allocator& alloc); 
   Vector(const size_type  count, const Allocator& alloc = Allocator());
   Vector(const size_type  count, const T& value, const Allocator& alloc = Allocator());
-  Vector(std::initializer_list<T> init, const Allocator& alloc = Allocator());
+  template<typename InputIt>
+  Vector(InputIt first, InputIt last, const Allocator& alloc = Allocator());
   Vector(const Vector& other );
   Vector(Vector&& other);
   Vector(const Vector& other, const Allocator& alloc); 
   Vector(Vector&& other, const Allocator& alloc);
-  ~Vector();
+  Vector(std::initializer_list<T> init, const Allocator& alloc = Allocator());
+  
+  ~Vector(); 
   void push_back(const T &);
   void push_back(T&&);
   void pop_back();
@@ -115,7 +118,7 @@ Vector<T, Allocator>::Vector() : m_data{nullptr}, m_capacity{2},
 }
 template <typename T, typename Allocator>
 Vector<T, Allocator>::Vector(const size_type count, const Allocator& alloc)
-    : m_data{nullptr}, m_capacity{count}, m_size{},
+    : m_data{nullptr}, m_capacity{count * 2}, m_size{count},
       allocator{alloc}
 {
   try {
@@ -124,15 +127,31 @@ Vector<T, Allocator>::Vector(const size_type count, const Allocator& alloc)
     std::cerr << "ERROR: Could not allocate memory\n";
     exit(1);
   }
-}
-template <typename T, typename Allocator> 
-Vector<T, Allocator>::~Vector() {
-  allocator.deallocate(m_data, m_capacity);
-  m_capacity = m_size = 0;
-  m_data = nullptr;
+
+  for (size_type i = 0; i < m_size; i++) {
+    m_data[i] = T();
+  }
 }
 
-
+template<typename T, typename Allocator>
+Vector<T, Allocator>::Vector(size_type count, T const& value, Allocator const&
+                             alloc)
+    :
+        m_data{nullptr},
+        m_capacity{count * 2},
+        m_size{count},
+        allocator{alloc}
+{
+    try{
+        m_data = allocator.allocate(m_capacity);
+    } catch(std::bad_array_new_length& err) {
+        std::cerr << "ERROR: Could not allocate memory\n";
+        exit(1);
+    }
+    for (size_type i = 0; i < count; i++) {
+        m_data[i] = value;
+    }
+}
 template<typename T, typename Allocator>
 Vector<T, Allocator>::Vector(const Vector& other)
     :
@@ -158,6 +177,9 @@ Vector<T, Allocator>::Vector(Vector&& other)
     }
 
     *this = std::move(other);
+    allocator.deallocate(other.m_data, other.m_capacity);
+    other.m_data = nullptr;
+    other.m_capacity = other.m_size = 0;
 }
 template<typename T, typename Allocator>
 Vector<T, Allocator>::Vector(const Vector& other, const Allocator& alloc)
@@ -181,6 +203,15 @@ Vector<T, Allocator>::Vector(Vector&& other, const Allocator& alloc)
     }
 
     *this = std::move(other);
+    allocator.deallocate(other.m_data, other.m_capacity);
+    other.m_capacity = other.m_size = 0;
+    other.m_data = nullptr;
+}
+template <typename T, typename Allocator> 
+Vector<T, Allocator>::~Vector() {
+  allocator.deallocate(m_data, m_capacity);
+  m_capacity = m_size = 0;
+  m_data = nullptr;
 }
 template <typename T, typename Allocator> 
 void Vector<T, Allocator>::push_back(const T &value) {
@@ -222,7 +253,7 @@ template <typename T, typename Allocator> size_t Vector<T, Allocator>::max_capac
 template <typename T, typename Allocator>
 Vector<T, Allocator>::Vector(std::initializer_list<T> init, const Allocator& alloc)
     : 
-        Vector(init.size(), alloc)
+        Vector(init.size() * 2, alloc)
 {
   m_data = allocator.allocate(m_capacity);
   std::size_t i = 0;
